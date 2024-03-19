@@ -37,9 +37,9 @@ INCLUDES			=	-I$(EXTERNAL_DIR)/ft_printf/src/
 SRC_DIR				=	./src
 SOURCES				=	/main.c			\
 						/pipex.c		\
-						/utils.c	\
+						/utils.c		\
 # SOURCES_BONUS		=	
-SOURCES				:=	$(addprefix $(SRC_DIR)/, $(SOURCES))
+SOURCES				:=	$(addprefix $(SRC_DIR), $(SOURCES))
 
 # build
 BUILD_DIR 			=	./build
@@ -57,6 +57,8 @@ $(FT_PRINTF):
 						@cd $(EXTERNAL_DIR)/ft_printf && make 
 
 $(BUILD_DIR)/%.o:		$(SRC_DIR)/%.c
+						@mkdir -p $(dir $@)
+						@$(COMPILER) $(FLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 						@echo "$(RED)Cleaning process"
