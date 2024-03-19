@@ -1,0 +1,3 @@
+[submodule "external/libft"]
+	path = external/libft
+	url = git@github.com:dimadem/libft.git
