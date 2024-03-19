@@ -29,29 +29,25 @@ CFLAGS			=	-Wall -Werror -Wextra -g
 RM				=	rm -rf
 AR				=	ar rcs
 
-# Variables
-
-INCLUDE_DIR		=	./include
-OBJ_DIR			=	./obj
-PRINTF_DIR		=	./ft_printf
-LIBFT_DIR		=	./libft
-LIBFT			=	$(LIBFT_DIR)/libft.a
+# library
+LIBFT_DIR		=	../libft
+LIBFT	 		=	$(LIBFT_DIR)/libft.a
 
 # Sources
-
+PRINTF_DIR		=	./ft_printf
 NAME				=	libftprintf.a
 FT_PRINTF_SRC_FILES	=	ft_printf.c					\
 						ft_printf_hexadecimal.c		\
 						ft_printf_pointer.c			\
 						ft_printf_unsigned.c		\
 						ft_printf_utils.c
-OBJS				=	$(FT_PRINTF_SRC_FILES:%.c=$(OBJ_DIR)/%.o)
+					
+OBJS				=	$(FT_PRINTF_SRC_FILES:%.c=%.o)
 
 # Comands
-
 all:				$(NAME)
 
-$(NAME):	$(LIBFT) $(OBJ_DIR) $(OBJS)
+$(NAME):	$(LIBFT) $(OBJS)
 					@cp $(LIBFT) $(NAME)
 					$(AR) $(NAME) $(OBJS)
 					@echo "$(GREEN)FT_PRINTF compiled$(DEF_COLOR)"
@@ -59,16 +55,14 @@ $(NAME):	$(LIBFT) $(OBJ_DIR) $(OBJS)
 $(LIBFT):
 					@echo "$(YELLOW)LIBFT compilation process"
 					@cd $(LIBFT_DIR) && make && echo "$(GREEN)LIBFT compiled$(DEF_COLOR)"
+				
 
-$(OBJ_DIR):
-					@echo "$(YELLOW)FT_PRINTF compilation process"
-					@mkdir -pv $(OBJ_DIR)
-
-$(OBJ_DIR)/%.o:		$(PRINTF_DIR)/%.c
-					$(CC) $(CFLAGS) -c $< -o $@ -I$(INCLUDE_DIR)
+%.o: %.c $(INCLUDE)
+	@echo "$(YELLOW)FT_PRINTF compilation process"
+	$(CC) $(CFLAGS) -I $(LIBFT_DIR) -c $< -o $@
 
 clean:
-					@$(RM) -rf $(OBJ_DIR)
+					@$(RM) -rf $(OBJS)
 					@cd $(LIBFT_DIR) && make clean
 					@echo "$(RED)FT_PRINTF object files cleaned!$(DEF_COLOR)"
 

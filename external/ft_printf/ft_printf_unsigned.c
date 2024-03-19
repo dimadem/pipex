@@ -15,14 +15,10 @@
 
 static void ft_u_itoa(unsigned int input_number, int *counter)
 {
-    int i;
-
-    i = 0;
     if(input_number > 9)
     {
         ft_u_itoa(input_number / 10, counter);
         ft_putchar(input_number % 10 + '0', counter);
-        i++;
     }
     else
         ft_putchar(input_number + '0', counter);
