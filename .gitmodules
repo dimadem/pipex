@@ -1,6 +1,3 @@
-[submodule "external/libft"]
-	path = external/libft
-	url = git@github.com:dimadem/libft.git
 [submodule "external/ft_printf"]
 	path = external/ft_printf
 	url = git@github.com:dimadem/ft_printf.git
