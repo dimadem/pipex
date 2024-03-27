@@ -1,10 +1,18 @@
 {
 	"cSpell.words": [
+		"Dima",
 		"PIPEX",
 		"puthexadecimal",
 		"putnbr",
 		"putpointer",
 		"putstring",
 		"putunsigned"
-	]
+	],
+	"files.associations": {
+		"*.css": "tailwindcss",
+		"*.tsx": "typescriptreact",
+		"stdarg.h": "c",
+		"pipex.h": "c",
+		"cstddef": "c"
+	}
 }
