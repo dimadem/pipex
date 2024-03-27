@@ -14,6 +14,7 @@
 		"stdarg.h": "c",
 		"pipex.h": "c",
 		"cstddef": "c",
-		"ft_printf.h": "c"
+		"ft_printf.h": "c",
+		"stdio.h": "c"
 	}
 }

@@ -35,9 +35,11 @@ INCLUDES			=	-I$(EXTERNAL_DIR)/ft_printf/src/
 
 # src
 SRC_DIR				=	./src
-SOURCES				=	/main.c			\
-						/pipex.c		\
-						/utils.c		\
+SOURCES				=	/pipex.c				\
+						/ft_fork.c				\
+						/ft_free.c 				\
+						/ft_init.c 				\
+						/utils.c				\
 # SOURCES_BONUS		=	
 SOURCES				:=	$(addprefix $(SRC_DIR), $(SOURCES))
 
