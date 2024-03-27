@@ -13,6 +13,7 @@
 		"*.tsx": "typescriptreact",
 		"stdarg.h": "c",
 		"pipex.h": "c",
-		"cstddef": "c"
+		"cstddef": "c",
+		"ft_printf.h": "c"
 	}
 }

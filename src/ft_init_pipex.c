@@ -1,11 +1,10 @@
 #include "pipex.h"
-#include <cstddef>
 
 int ft_init_pipex(t_pipex *pipex, int argc, char **argv, char **envp)
 {
-    pipex->cmd = NULL;
-    pipex->infile = NULL;
-    pipex->outfile = NULL;
+    pipex->cmd = ((void *)0);
+    pipex->infile = ((void *)0);
+    pipex->outfile = ((void *)0);
     pipex->infile_fd = -1;
     pipex->outfile_fd = -1;
     pipex->pipe_fd[0] = -1;
