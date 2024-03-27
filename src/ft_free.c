@@ -1,6 +1,6 @@
 #include "pipex.h"
 
-void ft_free_pipex(t_pipex *pipex)
+void ft_free(t_pipex *pipex)
 {
     if (pipex->cmd)
         ft_free_cmd(pipex->cmd);

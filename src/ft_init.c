@@ -1,6 +1,6 @@
 #include "pipex.h"
 
-int ft_init_pipex(t_pipex *pipex, int argc, char **argv, char **envp)
+int ft_init(t_pipex *pipex, int argc, char **argv, char **envp)
 {
     pipex->cmd = ((void *)0);
     pipex->infile = ((void *)0);

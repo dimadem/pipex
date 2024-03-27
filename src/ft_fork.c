@@ -1,6 +1,6 @@
 #include "pipex.h"
 
-int ft_fork_pipex(t_pipex *pipex)
+int ft_fork(t_pipex *pipex)
 {
     pid_t pid;
     int status;

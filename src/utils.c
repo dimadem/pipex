@@ -49,15 +49,15 @@ int ft_open_files(t_pipex *pipex)
     return (0);
 }
 
-void ft_free_array(char **arr)
+void ft_free_cmd(char **cmd)
 {
     int i;
 
     i = 0;
-    while (arr[i])
+    while (cmd[i])
     {
-        free(arr[i]);
+        free(cmd[i]);
         i++;
     }
-    free(arr);
+    free(cmd);
 }
