@@ -43,20 +43,27 @@ SOURCES				=	/pipex.c				\
 # SOURCES_BONUS		=	
 SOURCES				:=	$(addprefix $(SRC_DIR), $(SOURCES))
 
-# build
+# build 
 BUILD_DIR 			=	./build
-OBJS				=	$(appendix $(BUILD_DIR)/, $(SOURCES:.c.o))
+OBJS 				= 	$(addprefix $(BUILD_DIR)/, $(notdir $(SOURCES:%.c=%.o)))
 OBJS_BONUS			=	$(SOURCES_BONUS:%.c=$(BUILD_DIR)/%.o)
 
 all: 					$(NAME)
 
-$(NAME): $(FT_PRINTF)
+$(NAME): $(FT_PRINTF) $(OBJS)
 						@echo "$(WHITE)Building pipex"
-                        @mkdir -p $(BUILD_DIR)
-						@$(COMPILER) $(FLAGS) $(INCLUDES) $(SOURCES) $(FT_PRINTF) -o $(NAME)
+						@$(COMPILER) $(FLAGS) $(INCLUDES) $(FT_PRINTF) $(OBJS) -o $(NAME)
+						@file $(NAME)
 						@echo "$(GREEN)Pipex built$(DEF_COLOR)"
+						
 $(FT_PRINTF):
 						@cd $(EXTERNAL_DIR)/ft_printf && make 
+
+# $(BUILD_DIR)/%.o:		$(SRC_DIR)/%.c
+$(OBJS):				$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+						@mkdir -p $(BUILD_DIR)
+						@$(COMPILER) $(FLAGS) $(INCLUDES) -c $< -o $@
+
 
 clean:
 						@echo "$(RED)Cleaning process"
