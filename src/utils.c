@@ -9,7 +9,7 @@ int ft_create_pipes(t_pipex *pipex)
 
 int ft_parse_cmd(t_pipex *pipex, char **envp)
 {
-    char *path;
+    char *path = ((void *)0);
     char *cmd;
     int i;
 
@@ -60,4 +60,23 @@ void ft_free_cmd(char **cmd)
         i++;
     }
     free(cmd);
+}
+
+int ft_parse_pipex(t_pipex *pipex, int argc, char **argv)
+{
+    int i;
+
+    i = 0;
+    while (i < argc)
+    {
+        if (ft_strncmp(argv[i], "-i", 3) == 0)
+            pipex->infile = ft_strdup(argv[i + 1]);
+        if (ft_strncmp(argv[i], "-o", 3) == 0)
+            pipex->outfile = ft_strdup(argv[i + 1]);
+        i++;
+    }
+    if (!pipex->infile || !pipex->outfile)
+        return (-1);
+    pipex->cmd = ft_split(argv[3], ' ');
+    return (0);
 }
