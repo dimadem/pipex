@@ -1,10 +1,10 @@
 #include "pipex.h"
 
-int pipex(int argc, char **argv, char **envp)
+int main(int argc, char **argv, char **envp)
 {
     t_pipex pipex;
 
-    if (argc != 5)
+    if (argc < 5)
     {
         perror("Error: Invalid number of arguments\n");
         return (-1);
