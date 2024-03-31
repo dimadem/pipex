@@ -25,7 +25,7 @@ WHITE		=	\033[0;97m
 NAME				=	pipex
 
 COMPILER			=	gcc
-FLAGS				=	-Wall -Wextra -Werror
+FLAGS				=	-Wall -Wextra -Werror -g
 AR					=	ar rcs
 
 # external
@@ -35,13 +35,9 @@ INCLUDES			=	-I$(EXTERNAL_DIR)/ft_printf/src/
 
 # src
 SRC_DIR				=	./src
-SOURCES				=	/pipex.c				\
-						/ft_fork.c				\
-						/ft_free.c 				\
-						/ft_init.c 				\
-						/utils.c				\
+SOURCES				=	$(SRC_DIR)/%.c
 # SOURCES_BONUS		=	
-SOURCES				:=	$(addprefix $(SRC_DIR), $(SOURCES))
+SOURCES				=	$(wildcard $(SRC_DIR)/*.c)
 
 # build 
 BUILD_DIR 			=	./build
@@ -55,7 +51,7 @@ $(NAME): $(FT_PRINTF) $(OBJS)
 						@$(COMPILER) $(FLAGS) $(INCLUDES) $(FT_PRINTF) $(OBJS) -o $(NAME)
 						@file $(NAME)
 						@echo "$(GREEN)Pipex built$(DEF_COLOR)"
-						
+
 $(FT_PRINTF):
 						@cd $(EXTERNAL_DIR)/ft_printf && make 
 

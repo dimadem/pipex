@@ -1,19 +1,48 @@
 #include "pipex.h"
 
-int ft_init(t_pipex *pipex, int argc, char **argv, char **envp)
+static void ft_null(t_pipex *pipex)
 {
-    pipex->cmd = ((void *)0);
-    pipex->infile = ((void *)0);
-    pipex->outfile = ((void *)0);
+    pipex->directories = NULL;
+    pipex->shift = 0;
+    pipex->args_count = 0;
+    pipex->args = NULL;
+    pipex->cmds = NULL;
+    pipex->infile = NULL;
+    pipex->outfile = NULL;
     pipex->infile_fd = -1;
     pipex->outfile_fd = -1;
     pipex->pipe_fd[0] = -1;
     pipex->pipe_fd[1] = -1;
-    if (ft_parse_pipex(pipex, argc, argv) == -1)
-        return (-1);
-    if (ft_open_files(pipex) == -1)
-        return (-1);
-    if (ft_parse_cmd(pipex, envp) == -1)
-        return (-1);
-    return (0);
+    pipex->here_doc = 0;
+    pipex->pid_left = -1;
+    pipex->pid_right = -1;
+}
+
+void ft_init(t_pipex *pipex, int *argc, char **argv, char **envp)
+{
+    ft_null(pipex);
+    pipex->directories = ft_parse_path(envp);
+    // print pipex directories
+    while (*pipex->directories)
+    {
+        ft_printf("pipex->directories: %s\n", *pipex->directories);
+        pipex->directories++;
+    }
+    write(1, "\n", 1);
+    pipex->args_count = ((*argc) - 4);
+    pipex->shift = 2;
+    pipex->args = ft_parse_args(pipex, argv);
+    // print pipex args list
+    while (*pipex->args)
+    {
+        ft_printf("pipex->args: %s\n", *pipex->args);
+        pipex->args++;
+    }
+    write(1, "\n", 1);
+    pipex->infile = argv[1];
+    pipex->outfile = argv[4];
+    // open files
+    ft_open_file(pipex);
+    // pipex->pipe_fd
+    ft_create_pipes(pipex);
 }

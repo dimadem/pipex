@@ -4,17 +4,16 @@ int main(int argc, char **argv, char **envp)
 {
     t_pipex pipex;
 
+    ft_printf("argc: %d\n", argc);
+    ft_printf("argv: %s %s %s %s\n\n", argv[1], argv[2], argv[3], argv[4]);
+    // printf("envp: %s %s %s %s\n", envp[1], envp[2], envp[3], envp[4]);
     if (argc < 5)
     {
-        perror("Error: Invalid number of arguments\n");
-        return (-1);
+        errno = EINVAL;
+        perror("Error: not enough arguments");
+        return (EXIT_FAILURE);
     }
-    if (ft_init(&pipex, argc, argv, envp) == -1)
-        return (-1);
-    if (ft_create_pipes(&pipex) == -1)
-        return (-1);
-    if (ft_fork(&pipex) == -1)
-        return (-1);
-    ft_free(&pipex);
-    return (0);
+    ft_init(&pipex, &argc, argv, envp);
+    ft_processing(&pipex);
+    return (EXIT_SUCCESS);
 }

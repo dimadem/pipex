@@ -15,6 +15,16 @@
 		"pipex.h": "c",
 		"cstddef": "c",
 		"ft_printf.h": "c",
-		"stdio.h": "c"
+		"stdio.h": "c",
+		"libft.h": "c",
+		"fcntl.h": "c",
+		"errno.h": "c",
+		"unistd.h": "c",
+		"wait.h": "c",
+		"_null.h": "c",
+		"_useconds_t.h": "c",
+		"_uid_t.h": "c",
+		"stdlib.h": "c",
+		"stddef.h": "c"
 	}
 }
