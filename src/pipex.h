@@ -40,7 +40,7 @@ int ft_create_pipes(t_pipex *pipex);
 
 int ft_processing(t_pipex *pipex);
 
-void ft_free(t_pipex *pipex);
+void ft_free_pipex(t_pipex *pipex);
 void ft_free_2d_arr(char **arr);
 void ft_free_3d_arr(char ***arr);
 

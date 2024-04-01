@@ -1,5 +1,12 @@
 #include "pipex.h"
+// todo
+//! FIX
 
+/*
+pipex(99277,0x1f173bac0) malloc: *** error for object 0x16fcff4f0: pointer being freed was not allocated
+pipex(99277,0x1f173bac0) malloc: *** set a breakpoint in malloc_error_break to debug
+zsh: abort      ./pipex ./test/infile ls -l wc -l ./test/outfile
+*/
 int main(int argc, char **argv, char **envp)
 {
     t_pipex pipex;
@@ -19,6 +26,6 @@ int main(int argc, char **argv, char **envp)
     ft_init(&pipex, &argc, argv, envp);
     ft_printf("\n**ft_processing**\n");
     ft_processing(&pipex);
-    ft_free(&pipex);
+    ft_free_pipex(&pipex);
     return (EXIT_SUCCESS);
 }
