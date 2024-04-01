@@ -29,8 +29,10 @@ void ft_init(t_pipex *pipex, int *argc, char **argv, char **envp)
         pipex->directories++;
     }
     write(1, "\n", 1);
-    pipex->args_count = ((*argc) - 4);
+    pipex->args_count = ((*argc) - 3);
+    ft_printf("pipex->args_count: %d\n", pipex->args_count);
     pipex->shift = 2;
+    ft_printf("\n**ft_parse_args**\n");
     pipex->args = ft_parse_args(pipex, argv);
     // print pipex args list
     while (*pipex->args)
@@ -40,7 +42,7 @@ void ft_init(t_pipex *pipex, int *argc, char **argv, char **envp)
     }
     write(1, "\n", 1);
     pipex->infile = argv[1];
-    pipex->outfile = argv[4];
+    pipex->outfile = argv[6];
     // open files
     ft_open_file(pipex);
     // pipex->pipe_fd

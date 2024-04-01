@@ -1,18 +1,16 @@
 #include "pipex.h"
 
-//! fix косяк с памятью и стабильным парсом ls -l wc -l
 char **ft_parse_args(t_pipex *pipex, char **argv)
 {
     static char **args;
     static int i;
-
     args = (char **)malloc(sizeof(char **) * (pipex->args_count + 1));
     if (!args)
         exit(EXIT_FAILURE);
     i = 0;
-    while (i <= pipex->args_count)
+    while (i < pipex->args_count)
     {
-        ft_printf("args parsed -> %s\n", argv[i + pipex->shift]);
+        ft_printf("argv[%d] -> %s\n", (i + pipex->shift), argv[i + pipex->shift]);
         args[i] = ft_strdup(argv[i + pipex->shift]);
         if (!args[i])
         {
@@ -22,7 +20,8 @@ char **ft_parse_args(t_pipex *pipex, char **argv)
         i++;
     }
     args[i] = NULL;
-    ft_printf("parsed args -> %s %s %s\n", args[0], args[1], args[2]);
+    ft_printf("\n");
+    ft_printf("args[0]: %s\nargs[1]: %s\nargs[2]: %s\nargs[3]: %s\n\n", args[0], args[1], args[2], args[3]);
     return (args);
 }
 
