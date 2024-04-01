@@ -15,7 +15,7 @@ typedef struct s_pipex
     int shift;
     int args_count;
     char **args;
-    char **cmds;
+    char ***cmds;
     char *infile;
     char *outfile;
 
@@ -34,12 +34,14 @@ void ft_init(t_pipex *pipex, int *argc, char **argv, char **envp);
 
 char **ft_parse_path(char **envp);
 char **ft_parse_args(t_pipex *pipex, char **argv);
+char ***ft_set_cmds(t_pipex *pipex);
 int ft_open_file(t_pipex *pipex);
 int ft_create_pipes(t_pipex *pipex);
 
 int ft_processing(t_pipex *pipex);
 
 void ft_free(t_pipex *pipex);
-void ft_free_arr(char **arr);
+void ft_free_2d_arr(char **arr);
+void ft_free_3d_arr(char ***arr);
 
 #endif

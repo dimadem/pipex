@@ -14,7 +14,7 @@ char **ft_parse_args(t_pipex *pipex, char **argv)
         args[i] = ft_strdup(argv[i + pipex->shift]);
         if (!args[i])
         {
-            ft_free_arr(args);
+            ft_free_2d_arr(args);
             exit(EXIT_FAILURE);
         }
         i++;
@@ -72,17 +72,4 @@ int ft_create_pipes(t_pipex *pipex)
         exit(EXIT_FAILURE);
     }
     return (EXIT_SUCCESS);
-}
-
-void ft_free_arr(char **arr)
-{
-    int i;
-
-    i = 0;
-    while (arr[i] != NULL)
-    {
-        free(arr[i]);
-        i++;
-    }
-    free(arr);
 }
