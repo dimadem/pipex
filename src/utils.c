@@ -2,8 +2,8 @@
 
 char **ft_parse_args(t_pipex *pipex, char **argv)
 {
-    static char **args;
-    static int i;
+    char **args;
+    int i;
     args = (char **)malloc(sizeof(char **) * (pipex->args_count + 1));
     if (!args)
         exit(EXIT_FAILURE);
@@ -27,9 +27,9 @@ char **ft_parse_args(t_pipex *pipex, char **argv)
 
 char **ft_parse_path(char **envp)
 {
-    static char *path = NULL;
-    static char **directories = NULL;
-    static int i;
+    char *path = NULL;
+    char **directories = NULL;
+    int i;
 
     i = -1;
     while (*envp[++i])
@@ -45,6 +45,46 @@ char **ft_parse_path(char **envp)
     directories = ft_split(path, ':');
     free(path);
     return (directories);
+}
+
+char ***ft_set_cmds(t_pipex *pipex)
+{
+    char ***cmds;
+    int i, j;
+
+    i = 0;
+    j = 0;
+    cmds = (char ***)malloc(sizeof(char **) * ((pipex->args_count / 2) + 1));
+    if (!cmds)
+        exit(EXIT_FAILURE);
+    while (i < pipex->args_count)
+    {
+        cmds[j] = (char **)malloc(sizeof(char *) * 3);
+        if (!cmds[j])
+        {
+            ft_free_2d_arr(cmds[j]);
+            exit(EXIT_FAILURE);
+        }
+        ft_printf("pipex->args[%d]: %s\n", i, pipex->args[i]);
+        ft_printf("pipex->args[%d]: %s\n", i + 1, pipex->args[i + 1]);
+        cmds[j][0] = ft_strdup(pipex->args[i]);
+        cmds[j][1] = ft_strdup(pipex->args[i + 1]);
+        cmds[j][2] = NULL;
+
+        i += 2;
+        j++;
+    }
+    cmds[j] = NULL;
+    // ft_printf("\ncmds set\n");
+    // ft_printf("cmds[0][0]: %s\n", cmds[0][0]);
+    // ft_printf("cmds[0][1]: %s\n", cmds[0][1]);
+    // ft_printf("cmds[0][2]: %s\n", cmds[0][2]);
+    // ft_printf("cmds[1][0]: %s\n", cmds[1][0]);
+    // ft_printf("cmds[1][1]: %s\n", cmds[1][1]);
+    // ft_printf("cmds[1][2]: %s\n", cmds[1][2]);
+    // ft_printf("cmds[1][2]: %s\n", cmds[1][2]);
+    // ft_printf("cmds[2][0]: %s\n", cmds[2][0]);
+    return (cmds);
 }
 
 int ft_open_file(t_pipex *pipex)
