@@ -25,6 +25,8 @@
 		"_useconds_t.h": "c",
 		"_uid_t.h": "c",
 		"stdlib.h": "c",
-		"stddef.h": "c"
-	}
+		"stddef.h": "c",
+		"pipex_bonus.h": "c"
+	},
+	"C_Cpp.dimInactiveRegions": true
 }

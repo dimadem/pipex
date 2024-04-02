@@ -35,14 +35,14 @@ INCLUDES			=	-I$(EXTERNAL_DIR)/ft_printf/src/
 
 # src
 SRC_DIR				=	./src
-SOURCES				=	$(SRC_DIR)/%.c
-# SOURCES_BONUS		=	
+SRC_BONUS_DIR		=	./src_bonus
 SOURCES				=	$(wildcard $(SRC_DIR)/*.c)
+SOURCES_BONUS		=	$(wildcard $(SRC_BONUS_DIR)/*.c)
 
 # build 
 BUILD_DIR 			=	./build
 OBJS 				= 	$(addprefix $(BUILD_DIR)/, $(notdir $(SOURCES:%.c=%.o)))
-OBJS_BONUS			=	$(SOURCES_BONUS:%.c=$(BUILD_DIR)/%.o)
+OBJS_BONUS			=	$(addprefix $(BUILD_DIR)/, $(notdir $(SOURCES_BONUS:%.c=%.o)))
 
 all: 					$(NAME)
 
@@ -52,14 +52,22 @@ $(NAME): $(FT_PRINTF) $(OBJS)
 						@file $(NAME)
 						@echo "$(GREEN)Pipex built$(DEF_COLOR)"
 
-$(FT_PRINTF):
-						@cd $(EXTERNAL_DIR)/ft_printf && make 
-
-# $(BUILD_DIR)/%.o:		$(SRC_DIR)/%.c
 $(OBJS):				$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 						@mkdir -p $(BUILD_DIR)
 						@$(COMPILER) $(FLAGS) $(INCLUDES) -c $< -o $@
 
+bonus:					$(FT_PRINTF) $(OBJS_BONUS)
+						@echo "$(MAGENTA)Building pipex"
+						@$(COMPILER) $(FLAGS) $(INCLUDES) $(OBJS_BONUS) -o $(NAME) $(FT_PRINTF)
+						@file $(NAME)
+						@echo "$(GREEN)Pipex bonus part built$(DEF_COLOR)"
+
+$(OBJS_BONUS):			$(BUILD_DIR)/%.o: $(SRC_BONUS_DIR)/%.c
+						@mkdir -p $(BUILD_DIR)
+						@$(COMPILER) $(FLAGS) $(INCLUDES) -c $< -o $@
+
+$(FT_PRINTF):
+						@cd $(EXTERNAL_DIR)/ft_printf && make 
 
 clean:
 						@echo "$(RED)Cleaning process"
