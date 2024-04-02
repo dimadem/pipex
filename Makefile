@@ -48,7 +48,7 @@ all: 					$(NAME)
 
 $(NAME): $(FT_PRINTF) $(OBJS)
 						@echo "$(WHITE)Building pipex"
-						@$(COMPILER) $(FLAGS) $(INCLUDES) $(FT_PRINTF) $(OBJS) -o $(NAME)
+						@$(COMPILER) $(FLAGS) $(INCLUDES) $(OBJS) -o $(NAME) $(FT_PRINTF)
 						@file $(NAME)
 						@echo "$(GREEN)Pipex built$(DEF_COLOR)"
 

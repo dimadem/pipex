@@ -43,6 +43,11 @@ char **ft_parse_path(char **envp)
         }
     }
     directories = ft_split(path, ':');
+    if (!directories)
+    {
+        free(path);
+        return (NULL);
+    }
     free(path);
     return (directories);
 }
