@@ -26,6 +26,6 @@ int main(int argc, char **argv, char **envp)
     ft_init(&pipex, &argc, argv, envp);
     ft_printf("\n**ft_processing**\n");
     ft_processing(&pipex);
-    // ft_free_pipex(&pipex);
+    ft_free_pipex(&pipex);
     return (EXIT_SUCCESS);
 }

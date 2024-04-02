@@ -2,6 +2,10 @@
 
 void ft_free_pipex(t_pipex *pipex)
 {
+    if (pipex->directories)
+        ft_free_2d_arr(pipex->directories);
+    if (pipex->args)
+        ft_free_2d_arr(pipex->args);
     if (pipex->cmds)
         ft_free_3d_arr(pipex->cmds);
     if (pipex->infile)
