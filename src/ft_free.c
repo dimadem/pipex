@@ -8,10 +8,6 @@ void ft_free_pipex(t_pipex *pipex)
         ft_free_2d_arr(pipex->args);
     if (pipex->cmds)
         ft_free_3d_arr(pipex->cmds);
-    if (pipex->infile)
-        free(pipex->infile);
-    if (pipex->outfile)
-        free(pipex->outfile);
 }
 
 void ft_free_2d_arr(char **arr)
