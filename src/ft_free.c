@@ -14,12 +14,9 @@ void ft_free_2d_arr(char **arr)
 {
     int i;
 
-    i = 0;
-    while (arr[i] != NULL)
-    {
+    i = -1;
+    while (arr[++i] != NULL)
         free(arr[i]);
-        i++;
-    }
     free(arr);
 }
 
@@ -27,11 +24,8 @@ void ft_free_3d_arr(char ***arr)
 {
     int i;
 
-    i = 0;
-    while (arr[i] != NULL)
-    {
+    i = -1;
+    while (arr[++i] != NULL)
         ft_free_2d_arr(arr[i]);
-        i++;
-    }
     free(arr);
 }

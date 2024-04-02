@@ -26,8 +26,8 @@ typedef struct s_pipex
 
     int here_doc;
 
-    pid_t pid_left;
-    pid_t pid_right;
+    // pid_t pid_left;
+    // pid_t pid_right;
 } t_pipex;
 
 void ft_init(t_pipex *pipex, int *argc, char **argv, char **envp);

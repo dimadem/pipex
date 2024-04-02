@@ -10,18 +10,17 @@ char **ft_parse_args(t_pipex *pipex, char **argv)
     i = 0;
     while (i < pipex->args_count)
     {
-        ft_printf("argv[%d] -> %s\n", (i + pipex->shift), argv[i + pipex->shift]);
+        // ft_printf("argv[%d] -> %s\n", (i + pipex->shift), argv[i + pipex->shift]);
         args[i] = ft_strdup(argv[i + pipex->shift]);
         if (!args[i])
         {
-            ft_free_2d_arr(args);
             exit(EXIT_FAILURE);
         }
         i++;
     }
     args[i] = NULL;
-    ft_printf("\n");
-    ft_printf("args[0]: %s\nargs[1]: %s\nargs[2]: %s\nargs[3]: %s\n\n", args[0], args[1], args[2], args[3]);
+    // ft_printf("\n");
+    // ft_printf("args[0]: %s\nargs[1]: %s\nargs[2]: %s\nargs[3]: %s\n\n", args[0], args[1], args[2], args[3]);
     return (args);
 }
 
@@ -67,15 +66,13 @@ char ***ft_set_cmds(t_pipex *pipex)
         cmds[j] = (char **)malloc(sizeof(char *) * 3);
         if (!cmds[j])
         {
-            ft_free_2d_arr(cmds[j]);
             exit(EXIT_FAILURE);
         }
-        ft_printf("pipex->args[%d]: %s\n", i, pipex->args[i]);
-        ft_printf("pipex->args[%d]: %s\n", i + 1, pipex->args[i + 1]);
+        // ft_printf("pipex->args[%d]: %s\n", i, pipex->args[i]);
+        // ft_printf("pipex->args[%d]: %s\n", i + 1, pipex->args[i + 1]);
         cmds[j][0] = ft_strdup(pipex->args[i]);
         cmds[j][1] = ft_strdup(pipex->args[i + 1]);
         cmds[j][2] = NULL;
-
         i += 2;
         j++;
     }
@@ -103,7 +100,7 @@ int ft_open_file(t_pipex *pipex)
     pipex->outfile_fd = open(pipex->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (pipex->outfile_fd == -1)
     {
-        ft_printf(" Error: Failed to open outfile\n");
+        ft_printf("Error: Failed to open outfile\n");
         exit(EXIT_FAILURE);
     }
     return (EXIT_SUCCESS);
