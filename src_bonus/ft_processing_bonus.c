@@ -27,10 +27,6 @@ int ft_processing(t_pipex *pipex, char **envp) {
     exit(EXIT_FAILURE);
   }
   if (pids[i] == 0) {
-    // child process
-    close(pipes[1][0]);
-    close(pipes[1][1]);
-    close(pipes[0][0]);
     dup2(pipex->infile_fd, STDIN_FILENO);
     dup2(pipes[0][1], STDOUT_FILENO);
     ft_close_all_pipes(pipex, pipes);
@@ -67,7 +63,6 @@ int ft_processing(t_pipex *pipex, char **envp) {
         exit(EXIT_FAILURE);
       }
       if (pids[i] == 0) {
-        close(pipes[i - 1][1]);
         dup2(pipes[i - 1][0], STDIN_FILENO);
         dup2(pipes[i][1], STDOUT_FILENO);
         ft_close_all_pipes(pipex, pipes);
