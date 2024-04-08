@@ -21,9 +21,6 @@
 		"errno.h": "c",
 		"unistd.h": "c",
 		"wait.h": "c",
-		"_null.h": "c",
-		"_useconds_t.h": "c",
-		"_uid_t.h": "c",
 		"stdlib.h": "c",
 		"stddef.h": "c",
 		"pipex_bonus.h": "c"

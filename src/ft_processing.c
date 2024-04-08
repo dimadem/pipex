@@ -4,14 +4,17 @@ char *find_path(char **directories, char *cmd);
 
 int ft_processing(t_pipex *pipex)
 {
+
     int left_status, right_status;
     pid_t left_pid, right_pid;
     char *left_pid_path;
     char *right_pid_path;
     // ft_printf("left pid args  -> %s\n", pipex->args[0]);
-    // ft_printf("left pid cmd   -> %s, flag -> %s\n", pipex->cmds[0][0], pipex->cmds[0][1]);
+    // ft_printf("left pid cmd   -> %s, flag -> %s\n", pipex->cmds[0][0],
+    //           pipex->cmds[0][1]);
     // ft_printf("right pid args -> %s\n", pipex->args[2]);
-    // ft_printf("right pid cmd  -> %s, flag -> %s\n", pipex->cmds[1][0], pipex->cmds[1][1]);
+    // ft_printf("right pid cmd  -> %s, flag -> %s\n", pipex->cmds[1][0],
+    //           pipex->cmds[1][1]);
 
     left_pid = fork();
     if (left_pid == -1)

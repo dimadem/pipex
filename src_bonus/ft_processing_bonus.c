@@ -1,114 +1,103 @@
 #include "pipex_bonus.h"
+#include <sys/wait.h>
 
 char *find_path(char **directories, char *cmd);
 
-int ft_processing(t_pipex *pipex)
-{
-    int left_status, right_status;
-    pid_t left_pid, right_pid;
-    char *left_pid_path;
-    char *right_pid_path;
-    // ft_printf("left pid args  -> %s\n", pipex->args[0]);
-    // ft_printf("left pid cmd   -> %s, flag -> %s\n", pipex->cmds[0][0], pipex->cmds[0][1]);
-    // ft_printf("right pid args -> %s\n", pipex->args[2]);
-    // ft_printf("right pid cmd  -> %s, flag -> %s\n", pipex->cmds[1][0], pipex->cmds[1][1]);
+int ft_processing(t_pipex *pipex, char **envp) {
+  int pipes[pipex->args_count / 2][2];
+  pid_t pids[pipex->args_count / 2];
+  int status[pipex->args_count / 2];
+  int i;
 
-    left_pid = fork();
-    if (left_pid == -1)
-    {
-        perror("left pid fork");
-        exit(EXIT_FAILURE);
+  ft_printf("amount of forks() -> %d\n", (pipex->args_count / 2));
+  i = 0;
+  // create pipes
+  while (i < (pipex->args_count / 2)) {
+    if (pipe(pipes[i]) == -1) {
+      perror("pipe");
+      exit(EXIT_FAILURE);
     }
-    if (left_pid == 0)
-    {
-        // equivalent < infile.txt
-        if (dup2(pipex->infile_fd, STDIN_FILENO) == -1)
-        {
-            perror("left pid file in");
-            exit(EXIT_FAILURE);
-        }
-        close(pipex->infile_fd);
-        // send output to pipe
-        if (dup2(pipex->pipe_fd[1], STDOUT_FILENO) == -1)
-        {
-            perror("left pid pipe out");
-            exit(EXIT_FAILURE);
-        }
-        close(pipex->pipe_fd[0]);
-        close(pipex->pipe_fd[1]);
-        left_pid_path = find_path(pipex->directories, pipex->args[0]);
-        if (left_pid_path == NULL)
-        {
-            perror("left pid path not found");
-            exit(EXIT_FAILURE);
-        }
-        execve(left_pid_path, pipex->cmds[0], NULL);
-        perror("left pid execve");
+    ++i;
+  }
+  i = 0;
+  // file in -> cmd1 ->
+  pids[i] = fork();
+  if (pids[i] == -1) {
+    perror("fork");
+    exit(EXIT_FAILURE);
+  }
+  if (pids[i] == 0) {
+    // child process
+    close(pipes[1][0]);
+    close(pipes[1][1]);
+    close(pipes[0][0]);
+    dup2(pipex->infile_fd, STDIN_FILENO);
+    dup2(pipes[0][1], STDOUT_FILENO);
+    ft_close_all_pipes(pipex, pipes);
+    char *path = find_path(pipex->directories, pipex->args[i]);
+    execve(path, pipex->cmds[i], envp);
+    perror("execve");
+    exit(EXIT_FAILURE);
+  }
+  // -> cmd2 -> ... -> cmdN ->
+  while (++i < pipex->args_count / 2) {
+    ft_printf("args [%d] -> %s\n", i, pipex->args[i * 2]);
+    // last cmd -> file out
+    if (i == pipex->args_count / 2 - 1) {
+      pids[i] = fork();
+      if (pids[i] == -1) {
+        perror("fork");
         exit(EXIT_FAILURE);
-    }
-
-    right_pid = fork();
-    // ft_printf("right children pid -> %d\n", pipex->pid_right);
-    if (right_pid == -1)
-    {
-        perror("right pid fork");
-        exit(EXIT_FAILURE);
-    }
-    if (right_pid == 0)
-    {
-        // pipe routing from another child
-        if (dup2(pipex->pipe_fd[0], STDIN_FILENO) == -1)
-        {
-            perror("right pid pipe in");
-            exit(EXIT_FAILURE);
-        }
-        close(pipex->pipe_fd[0]);
-        close(pipex->pipe_fd[1]);
-        // equivalent > outfile.txt
-        if (dup2(pipex->outfile_fd, STDOUT_FILENO) == -1)
-        {
-            perror("right pid file out");
-            exit(EXIT_FAILURE);
-        }
+      }
+      if (pids[i] == 0) {
+        // -> file out
+        dup2(pipes[i - 1][0], STDIN_FILENO);
+        dup2(pipex->outfile_fd, STDOUT_FILENO);
+        ft_close_all_pipes(pipex, pipes);
         close(pipex->outfile_fd);
-        right_pid_path = find_path(pipex->directories, pipex->args[2]);
-        if (right_pid_path == NULL)
-        {
-            perror("right pid path not found");
-            exit(EXIT_FAILURE);
-        }
-        execve(right_pid_path, pipex->cmds[1], NULL);
-        perror("right pid execve");
+        char *path = find_path(pipex->directories, pipex->args[i * 2]);
+        execve(path, pipex->cmds[i], envp);
+        perror("execve");
         exit(EXIT_FAILURE);
+      }
+    } else {
+      pids[i] = fork();
+      if (pids[i] == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+      }
+      if (pids[i] == 0) {
+        close(pipes[i - 1][1]);
+        dup2(pipes[i - 1][0], STDIN_FILENO);
+        dup2(pipes[i][1], STDOUT_FILENO);
+        ft_close_all_pipes(pipex, pipes);
+        char *path = find_path(pipex->directories, pipex->args[i * 2]);
+        execve(path, pipex->cmds[i], envp);
+        perror("execve");
+        exit(EXIT_FAILURE);
+      }
     }
-    close(pipex->pipe_fd[0]);
-    close(pipex->pipe_fd[1]);
-    waitpid(left_pid, &left_status, 0);
-    waitpid(right_pid, &right_status, 0);
-    if (WIFEXITED(left_status) && WIFEXITED(right_status))
-    {
-        if ((WEXITSTATUS(left_status)) != 0 || (WEXITSTATUS(right_status)) != 0)
-            return (EXIT_FAILURE);
-    }
-    return (EXIT_SUCCESS);
+  }
+  ft_close_all_pipes(pipex, pipes);
+  int j = -1;
+  while (++j < pipex->args_count / 2)
+    waitpid(pids[j], &status[j], 0);
+  return (EXIT_SUCCESS);
 }
 
-char *find_path(char **directories, char *cmd)
-{
-    char *path;
-    int i;
+char *find_path(char **directories, char *cmd) {
+  char *path;
+  int i;
 
-    i = -1;
-    while (directories[++i] != NULL)
-    {
-        path = ft_strjoin(directories[i], "/");
-        path = ft_strjoin(path, cmd);
-        if (access(path, F_OK | X_OK) == 0)
-        {
-            // ft_printf("path found\n");
-            return (path);
-        }
-        free(path);
+  i = -1;
+  while (directories[++i] != ((void *)0)) {
+    path = ft_strjoin(directories[i], "/");
+    path = ft_strjoin(path, cmd);
+    if (access(path, F_OK | X_OK) == 0) {
+      ft_printf("path found\n");
+      return (path);
     }
-    return (NULL);
+    free(path);
+  }
+  return ((void *)0);
 }
