@@ -3,6 +3,8 @@
 
 void ft_infile_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
                     int *i);
+// void ft_here_doc_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
+//                       int *i);
 void ft_outfile_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
                      int *i);
 void ft_middle_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
@@ -48,11 +50,10 @@ int ft_processing(t_pipex *pipex, char **envp) {
 // todo
 //  1. ft_infile_fork() - done
 //  2. ft_outfile_fork() - done
-//  3. ft_middle_fork()
+//  3. ft_middle_fork() - done
 
 void ft_infile_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
                     int *i) {
-  // file in -> cmd1 ->
   pid[*i] = fork();
   if (pid[*i] == -1) {
     perror("fork");
@@ -122,3 +123,5 @@ char *find_path(char **directories, char *cmd) {
   }
   return ((void *)0);
 }
+
+// ./pipex ./test/infile ls -l ls -l ls -l ls -l ls -l wc -l ./test/outfile
