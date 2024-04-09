@@ -1,25 +1,24 @@
 #include "pipex_bonus.h"
 
-char **ft_parse_args(t_pipex *pipex, char **argv) {
+char **ft_parse_args(t_pipex *pipex, int *argc, char **argv) {
   char **args;
   int i;
-  args = (char **)malloc(sizeof(char **) * (pipex->args_count + 1));
+  ft_printf("\nft_parse_args\n");
+  ft_printf("argc               -> %d\n", *argc);
+  args = (char **)malloc(sizeof(char **) * (*argc + 1));
   if (!args)
     exit(EXIT_FAILURE);
   i = 0;
-  while (i < pipex->args_count) {
-    // ft_printf("argv[%d] -> %s\n", (i + pipex->shift), argv[i +
-    // pipex->shift]);
-    args[i] = ft_strdup(argv[i + pipex->shift]);
+  while (i < *argc) {
+    ft_printf("args[%d]         -> %s\n", (i), argv[i]);
+    args[i] = ft_strdup(argv[i]);
     if (!args[i]) {
       exit(EXIT_FAILURE);
     }
     i++;
   }
+  pipex->args_count = i;
   args[i] = NULL;
-  // ft_printf("\n");
-  // ft_printf("args[0]: %s\nargs[1]: %s\nargs[2]: %s\nargs[3]: %s\n\n",
-  // args[0], args[1], args[2], args[3]);
   return (args);
 }
 
@@ -52,30 +51,35 @@ char ***ft_set_cmds(t_pipex *pipex) {
 
   i = 0;
   j = 0;
-  cmds = (char ***)malloc(sizeof(char **) * ((pipex->args_count / 2) + 1));
+  ft_printf("\nft_set_cmds\n");
+  ft_printf("pipex->args_count %d\n", pipex->args_count);
+  ft_printf("pipex->shift %d\n", pipex->shift);
+  cmds =
+      (char ***)malloc(sizeof(char **) * (((pipex->args_count - 3) / 2) + 1));
   if (!cmds)
     exit(EXIT_FAILURE);
-  while (i < pipex->args_count) {
+  while (i < pipex->args_count - 3) {
     cmds[j] = (char **)malloc(sizeof(char *) * 3);
     if (!cmds[j]) {
       exit(EXIT_FAILURE);
     }
-    // ft_printf("pipex->args[%d]: %s\n", i, pipex->args[i]);
-    // ft_printf("pipex->args[%d]: %s\n", i + 1, pipex->args[i + 1]);
-    cmds[j][0] = ft_strdup(pipex->args[i]);
-    cmds[j][1] = ft_strdup(pipex->args[i + 1]);
+    ft_printf("pipex->args[%d]: %s\n", i, pipex->args[i]);
+    ft_printf("pipex->args[%d]: %s\n", i + 1, pipex->args[i + 1]);
+    cmds[j][0] = ft_strdup(pipex->args[i + pipex->shift]);
+    cmds[j][1] = ft_strdup(pipex->args[i + 1 + pipex->shift]);
     cmds[j][2] = NULL;
     i += 2;
     j++;
   }
+  pipex->cmds_count = j;
   cmds[j] = NULL;
-  // ft_printf("\ncmds set\n");
-  // ft_printf("cmds[0][0]: %s\n", cmds[0][0]);
-  // ft_printf("cmds[0][1]: %s\n", cmds[0][1]);
-  // ft_printf("cmds[0][2]: %s\n", cmds[0][2]);
-  // ft_printf("cmds[1][0]: %s\n", cmds[1][0]);
-  // ft_printf("cmds[1][1]: %s\n", cmds[1][1]);
-  // ft_printf("cmds[1][2]: %s\n", cmds[1][2]);
+  ft_printf("\ncmds set\n");
+  ft_printf("cmds[0][0]: %s\n", cmds[0][0]);
+  ft_printf("cmds[0][1]: %s\n", cmds[0][1]);
+  ft_printf("cmds[0][2]: %s\n", cmds[0][2]);
+  ft_printf("cmds[1][0]: %s\n", cmds[1][0]);
+  ft_printf("cmds[1][1]: %s\n", cmds[1][1]);
+  ft_printf("cmds[1][2]: %s\n", cmds[1][2]);
   // ft_printf("cmds[2][0]: %s\n", cmds[2][0]);
   // ft_printf("cmds[2][1]: %s\n", cmds[2][1]);
   // ft_printf("cmds[2][2]: %s\n", cmds[2][2]);
@@ -96,28 +100,28 @@ int ft_open_file(t_pipex *pipex) {
   return (EXIT_SUCCESS);
 }
 
-int **ft_create_pipes(t_pipex *pipex) {
-  int **result;
-  int i;
+// int **ft_create_pipes(t_pipex *pipex) {
+//   int **result;
+//   int i;
 
-  i = 0;
-  result = (int **)malloc(sizeof(int *) * ((pipex->args_count / 2) + 1));
-  if (!result)
-    exit(EXIT_FAILURE);
-  while (i < (pipex->args_count / 2)) {
-    result[i] = (int *)malloc(sizeof(int) * 2);
-    if (!result[i])
-      exit(EXIT_FAILURE);
-    ft_printf("creating pipe [%d]\n", i);
-    if (pipe(result[i]) == -1) {
-      ft_printf("Error: Failed to create pipe\n");
-      exit(EXIT_FAILURE);
-    }
-    i++;
-  }
-  result[i] = ((void *)0);
-  return (result);
-}
+//   i = 0;
+//   result = (int **)malloc(sizeof(int *) * ((pipex->args_count / 2) + 1));
+//   if (!result)
+//     exit(EXIT_FAILURE);
+//   while (i < (pipex->args_count / 2)) {
+//     result[i] = (int *)malloc(sizeof(int) * 2);
+//     if (!result[i])
+//       exit(EXIT_FAILURE);
+//     ft_printf("creating pipe [%d]\n", i);
+//     if (pipe(result[i]) == -1) {
+//       ft_printf("Error: Failed to create pipe\n");
+//       exit(EXIT_FAILURE);
+//     }
+//     i++;
+//   }
+//   result[i] = ((void *)0);
+//   return (result);
+// }
 
 void ft_close_all_pipes(t_pipex *pipex, int pipes[][2]) {
   int j;

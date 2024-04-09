@@ -13,6 +13,7 @@ typedef struct s_pipex {
   char **directories;
   int shift;
   int args_count;
+  int cmds_count;
   char **args;
   char ***cmds;
   char *infile;
@@ -30,10 +31,10 @@ typedef struct s_pipex {
 void ft_init(t_pipex *pipex, int *argc, char **argv, char **envp);
 
 char **ft_parse_path(char **envp);
-char **ft_parse_args(t_pipex *pipex, char **argv);
+char **ft_parse_args(t_pipex *pipex, int *argc, char **argv);
 char ***ft_set_cmds(t_pipex *pipex);
 int ft_open_file(t_pipex *pipex);
-int **ft_create_pipes(t_pipex *pipex);
+// int **ft_create_pipes(t_pipex *pipex);
 void ft_close_all_pipes(t_pipex *pipex, int pipes[][2]);
 
 int ft_processing(t_pipex *pipex, char **envp);

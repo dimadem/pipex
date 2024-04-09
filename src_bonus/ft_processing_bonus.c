@@ -3,8 +3,8 @@
 
 void ft_infile_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
                     int *i);
-// void ft_here_doc_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
-//                       int *i);
+void ft_here_doc_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
+                      int *i);
 void ft_outfile_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
                      int *i);
 void ft_middle_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
@@ -12,15 +12,15 @@ void ft_middle_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
 char *find_path(char **directories, char *cmd);
 
 int ft_processing(t_pipex *pipex, char **envp) {
-  int pipes[pipex->args_count / 2][2];
-  pid_t pids[pipex->args_count / 2];
-  int status[pipex->args_count / 2];
+  int pipes[pipex->cmds_count - 1][2];
+  pid_t pids[pipex->cmds_count];
+  int status[pipex->cmds_count];
   int i;
-
-  ft_printf("amount of forks() -> %d\n", (pipex->args_count / 2));
+  ft_printf("\nft_processing\n");
+  ft_printf("cmds_count        -> %d\n", pipex->cmds_count);
   i = 0;
   // create pipes
-  while (i < (pipex->args_count / 2)) {
+  while (i <= pipex->cmds_count) {
     if (pipe(pipes[i]) == -1) {
       perror("pipe");
       exit(EXIT_FAILURE);
@@ -30,11 +30,12 @@ int ft_processing(t_pipex *pipex, char **envp) {
   i = 0;
   // file in -> cmd1 ->
   ft_infile_fork(pipex, envp, pipes, pids, &i);
+  ft_printf("cmds[%d][0]        -> %s\n", i, pipex->cmds[i][0]);
   // -> cmd2 -> ... -> cmdN ->
-  while (++i < pipex->args_count / 2) {
-    ft_printf("args [%d] -> %s\n", i, pipex->args[i * 2]);
+  while (++i < pipex->cmds_count) {
+    ft_printf("cmds[%d][0]        -> %s\n", i, pipex->cmds[i][0]);
     // last cmd -> file out
-    if (i == pipex->args_count / 2 - 1) {
+    if (i == pipex->cmds_count - 1) {
       ft_outfile_fork(pipex, envp, pipes, pids, &i);
     } else {
       ft_middle_fork(pipex, envp, pipes, pids, &i);
@@ -42,7 +43,7 @@ int ft_processing(t_pipex *pipex, char **envp) {
   }
   ft_close_all_pipes(pipex, pipes);
   i = -1;
-  while (++i < pipex->args_count / 2)
+  while (++i < pipex->cmds_count)
     waitpid(pids[i], &status[i], 0);
   return (EXIT_SUCCESS);
 }
@@ -62,8 +63,9 @@ void ft_infile_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
   if (pid[*i] == 0) {
     dup2(pipex->infile_fd, STDIN_FILENO);
     dup2(pipe[0][1], STDOUT_FILENO);
+    close(pipex->infile_fd);
     ft_close_all_pipes(pipex, pipe);
-    char *path = find_path(pipex->directories, pipex->args[*i]);
+    char *path = find_path(pipex->directories, pipex->cmds[*i][0]);
     execve(path, pipex->cmds[*i], envp);
     perror("execve");
     exit(EXIT_FAILURE);
@@ -80,9 +82,9 @@ void ft_outfile_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
   if (pid[*i] == 0) {
     dup2(pipe[*i - 1][0], STDIN_FILENO);
     dup2(pipex->outfile_fd, STDOUT_FILENO);
-    ft_close_all_pipes(pipex, pipe);
     close(pipex->outfile_fd);
-    char *path = find_path(pipex->directories, pipex->args[*i * 2]);
+    ft_close_all_pipes(pipex, pipe);
+    char *path = find_path(pipex->directories, pipex->cmds[*i][0]);
     execve(path, pipex->cmds[*i], envp);
     perror("execve");
     exit(EXIT_FAILURE);
@@ -91,6 +93,7 @@ void ft_outfile_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
 
 void ft_middle_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
                     int *i) {
+  ft_printf("ft_middle_fork\n");
   pid[*i] = fork();
   if (pid[*i] == -1) {
     perror("fork");
@@ -100,7 +103,7 @@ void ft_middle_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
     dup2(pipe[*i - 1][0], STDIN_FILENO);
     dup2(pipe[*i][1], STDOUT_FILENO);
     ft_close_all_pipes(pipex, pipe);
-    char *path = find_path(pipex->directories, pipex->args[*i * 2]);
+    char *path = find_path(pipex->directories, pipex->cmds[*i][0]);
     execve(path, pipex->cmds[*i], envp);
     perror("execve");
     exit(EXIT_FAILURE);
