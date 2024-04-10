@@ -3,8 +3,7 @@
 
 void ft_infile_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
                     int *i);
-void ft_here_doc_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
-                      int *i);
+void ft_here_doc_fork(t_pipex *pipex, int pipe[][2], pid_t *pid, int *i);
 void ft_outfile_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
                      int *i);
 void ft_middle_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
@@ -29,7 +28,10 @@ int ft_processing(t_pipex *pipex, char **envp) {
   }
   i = 0;
   // file in -> cmd1 ->
-  ft_infile_fork(pipex, envp, pipes, pids, &i);
+  if (pipex->here_doc == 0)
+    ft_here_doc_fork(pipex, pipes, pids, &i);
+  else
+    ft_infile_fork(pipex, envp, pipes, pids, &i);
   ft_printf("cmds[%d][0]        -> %s\n", i, pipex->cmds[i][0]);
   // -> cmd2 -> ... -> cmdN ->
   while (++i < pipex->cmds_count) {
@@ -48,10 +50,25 @@ int ft_processing(t_pipex *pipex, char **envp) {
   return (EXIT_SUCCESS);
 }
 
-// todo
-//  1. ft_infile_fork() - done
-//  2. ft_outfile_fork() - done
-//  3. ft_middle_fork() - done
+void ft_here_doc_fork(t_pipex *pipex, int pipe[][2], pid_t *pid, int *i) {
+  char *line;
+
+  pid[*i] = fork();
+  if (pid[*i] == -1) {
+    perror("fork");
+    exit(EXIT_FAILURE);
+  }
+  if (pid[*i] == 0) {
+    while ((line = ft_get_next_line(STDIN_FILENO)) != NULL) {
+      if (ft_strncmp(line, pipex->args[2], ft_strlen(pipex->args[2])) == 0) {
+        break;
+      }
+      write(pipe[0][1], line, ft_strlen(line));
+    }
+    ft_close_all_pipes(pipex, pipe);
+    exit(EXIT_SUCCESS);
+  }
+}
 
 void ft_infile_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
                     int *i) {
@@ -93,7 +110,6 @@ void ft_outfile_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
 
 void ft_middle_fork(t_pipex *pipex, char **envp, int pipe[][2], pid_t *pid,
                     int *i) {
-  ft_printf("ft_middle_fork\n");
   pid[*i] = fork();
   if (pid[*i] == -1) {
     perror("fork");
