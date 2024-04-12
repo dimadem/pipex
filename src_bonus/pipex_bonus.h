@@ -1,43 +1,36 @@
-#ifndef PIPEX_H
-#define PIPEX_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex_bonus.h                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmdemirk <dmdemirk@student.42london.c      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/04 17:33:03 by dmdemirk          #+#    #+#             */
+/*   Updated: 2024/04/12 16:10:25 by dmdemirk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "../external/ft_printf/src/ft_printf.h"
-#include <errno.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/wait.h>
-#include <unistd.h>
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 
-typedef struct s_pipex {
-  char **directories;
-  int shift;
-  int args_count;
-  int cmds_count;
-  char **args;
-  char ***cmds;
-  char *infile;
-  char *outfile;
+# include <stdlib.h>
+# include <sys/wait.h>
+# include <unistd.h>
+# include <errno.h>
+# include <stdio.h>
+# include <fcntl.h>
+# include "../external/ft_printf/src/ft_printf.h"
 
-  int infile_fd;
-  int outfile_fd;
-
-  int here_doc;
-} t_pipex;
-
-void ft_init(t_pipex *pipex, int *argc, char **argv, char **envp);
-
-char **ft_parse_path(char **envp);
-char **ft_parse_args(t_pipex *pipex, int *argc, char **argv);
-char ***ft_set_cmds(t_pipex *pipex);
-int ft_open_file(t_pipex *pipex);
-// int **ft_create_pipes(t_pipex *pipex);
-void ft_close_all_pipes(t_pipex *pipex, int pipes[][2]);
-
-int ft_processing(t_pipex *pipex, char **envp);
-
-void ft_free_pipex(t_pipex *pipex);
-void ft_free_2d_arr(char **arr);
-void ft_free_3d_arr(char ***arr);
+void	ft_process(char *argv, char **envp);
+void	ft_result(int argc, char **argv, char **envp, int *fd);
+void	ft_error(void);
+void	ft_report(void);
+char	*ft_find_path(char *cmd, char **envp);
+void	ft_free_2d_arr(char **arr);
+void	ft_free_3d_arr(char ***arr);
+int		ft_open(char *argv, int flags);
+void	ft_here_doc_process(int *outfile, int argc, char **argv);
+void	ft_infile_process(int *infile, int *outfile, int argc, char **argv);
+void	ft_execute(char *argv, char **envp);
 
 #endif
