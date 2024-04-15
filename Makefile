@@ -40,7 +40,7 @@ SRC_BONUS_DIR		=	./src_bonus
 SOURCES				=	$(wildcard $(SRC_DIR)/*.c)
 								       SOURCES_BONUS		=	$(wildcard $(SRC_BONUS_DIR)/*.c)
 
-# build 
+# build
 BUILD_DIR 			=	./build
 OBJS 				= 	$(addprefix $(BUILD_DIR)/, $(notdir $(SOURCES:%.c=%.o)))
 OBJS_BONUS			=	$(addprefix $(BUILD_DIR)/, $(notdir $(SOURCES_BONUS:%.c=%.o)))
@@ -68,7 +68,7 @@ $(OBJS_BONUS):	$(BUILD_DIR)/%.o: $(SRC_BONUS_DIR)/%.c
 	@$(COMPILER) $(FLAGS) $(INCLUDES) -c $< -o $@
 
 $(FT_PRINTF):
-	@cd $(EXTERNAL_DIR)/ft_printf && make 
+	@cd $(EXTERNAL_DIR)/ft_printf && make
 
 clean:
 	@echo "$(RED)Cleaning process"
